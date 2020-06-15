@@ -1,0 +1,9 @@
+
+while(true) do
+	print(get_robot_io_status(RobotIOType.RobotBoardUserDO, "U_DO_00"))
+	set_robot_io_status(RobotIOType.RobotBoardUserDO, "U_DO_00", 1)
+	sleep(0.5)
+	print(get_robot_io_status(RobotIOType.RobotBoardUserDO, "U_DO_00"))
+	set_robot_io_status(RobotIOType.RobotBoardUserDO, "U_DO_00", 0)
+	sleep(0.5)
+end

@@ -1,0 +1,21 @@
+init_global_move_profile()
+
+set_joint_maxacc({1,1,1,1,1,1})
+
+set_joint_maxvelc({1,1,1,1,1,1})
+
+set_end_maxacc(0.3)
+
+set_end_maxvelc(0.3)
+
+
+
+while(true) do
+
+	move_joint({get_global_variable("V_D_joint1Angle"),get_global_variable("V_D_joint2Angle"),
+
+	get_global_variable("V_D_joint3Angle"),get_global_variable("V_D_joint4Angle"),
+
+	get_global_variable("V_D_joint5Angle"),get_global_variable("V_D_joint6Angle")},true)
+
+end

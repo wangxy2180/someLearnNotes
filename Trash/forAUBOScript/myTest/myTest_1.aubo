@@ -1,0 +1,117 @@
+--动作：
+--1.收起机械臂，转90度
+--2.做两种上下
+--3.以两种速度画两个圈
+
+--角度转弧度，对每一个关节角进行d2r()
+function deg_to_rad(table1)
+	table_ret={}
+	for i=1,#table1,1 do
+		table_ret[i]=d2r(table1[i])
+	end
+	return table_ret
+end
+
+--对每个关节角归0
+function toZero()
+	wp0={0,0,0,0,0,0}
+	wp0_rad=deg_to_rad(wp0)
+	move_joint(wp0_rad,true)
+end
+
+wp1={0,90,150,150,90,0}
+wp2={-90,90,150,150,90,0}
+--
+wpStart={-16.418907,11.715555,-133.748860,-55.472799,-89.999982,-14.340675}
+wp3={-16.898397,-10.512184,-88.484384,12.019414,-89.999914,-14.820165}
+wp4={-39.222928,2.445864,-119.524322,-31.977911,-89.996731,-37.144696}
+--下两个点来做上下往复动作
+wp6={0,30,90,-30,90,0}
+wp7={0,35,145,20,90,0}
+wp8={0,-10,-90,10,-90,0}
+wp9={0,10,-135,-55,-90,0}
+
+--所有集体角度转弧度
+wp1_rad=deg_to_rad(wp1)
+wp2_rad=deg_to_rad(wp2)
+--
+wpStart_rad=deg_to_rad(wpStart)
+wp3_rad=deg_to_rad(wp3)
+wp4_rad=deg_to_rad(wp4)
+--
+wp6_rad=deg_to_rad(wp6)
+wp7_rad=deg_to_rad(wp7)
+wp8_rad=deg_to_rad(wp8)
+wp9_rad=deg_to_rad(wp9)
+
+ 
+----第一个动作----
+function action1()
+	--放平机械臂
+	init_global_move_profile()
+	set_joint_maxacc({1,1,1,1,1,1})
+	set_joint_maxvelc({1,1,1,1,1,1})
+	move_joint(wp1_rad,true)
+	--设置速度，加速度，转圈
+	init_global_move_profile()
+	set_end_maxacc(0.3)
+	set_end_maxvelc(0.3)
+	move_joint(wp2_rad,true)
+	--归零
+end
+
+--第二个动作
+--做上下移动的动作
+function action2(loc1_rad,loc2_rad)
+	init_global_move_profile()
+	set_end_maxacc(0.3)
+	set_end_maxvelc(0.3)
+	move_joint(loc1_rad,true)
+	for i=1,2,1 do
+		move_line(loc1_rad,true)
+		move_line(loc2_rad,true)
+	end
+end
+
+--做move_track的动作
+function action3(loc1_rad,loc2_rad,loc3_rad)
+	clear_global_waypoint_list()
+	--真绝了，上边这句会导致恢复默认速度
+	set_end_maxacc(0.3)
+	set_end_maxvelc(0.3)
+	add_waypoint(loc1_rad)
+	add_waypoint(loc2_rad)
+	add_waypoint(loc3_rad)
+	set_circular_loop_times(1)
+	move_track(MoveTrackType.Cir,true)
+	set_end_maxacc(1.5)
+	set_end_maxvelc(1.5)
+	set_circular_loop_times(1)
+	move_track(MoveTrackType.Cir,true)
+end
+
+function current_joint(real_joint)
+	joint_ret={}
+	joint_ret[1]=real_joint.joint.j1
+	joint_ret[2]=real_joint.joint.j2	joint_ret[3]=real_joint.joint.j3
+	joint_ret[4]=real_joint.joint.j4
+	joint_ret[5]=real_joint.joint.j5
+	joint_ret[6]=real_joint.joint.j6
+	return joint_ret
+end
+
+function mainFunc()	
+	toZero()
+	action1()
+	toZero()
+	action2(wp6_rad,wp7_rad)
+	toZero()
+	action2(wp8_rad,wp9_rad)
+	
+	move_joint(wpStart_rad,true)
+	realPoint=get_current_waypoint()
+	wpnow_rad=current_joint(realPoint)
+	action3(wpnow_rad,wp3_rad,wp4_rad)
+end
+
+mainFunc()

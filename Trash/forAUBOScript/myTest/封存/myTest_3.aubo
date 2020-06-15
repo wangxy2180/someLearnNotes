@@ -1,0 +1,34 @@
+
+function deg_to_rad(table1)
+	table_ret={}
+	for i=1,#table1,1 do
+		table_ret[i]=d2r(table1[i])
+	end
+	return table_ret
+end
+
+wp1={0,45,135,45,90,10}
+wp2={0,-17,90,61,90,0}
+wp3={0,-21,39.5,15,90,0}
+wp1_rad=deg_to_rad(wp1)
+wp2_rad=deg_to_rad(wp2)
+wp3_rad=deg_to_rad(wp3)
+
+init_global_move_profile()
+set_joint_maxacc({1,1,1,1,1,1})
+set_joint_maxvelc({1,1,1,1,1,1})
+set_end_maxacc(0.3)
+set_end_maxvelc(0.3)
+
+move_joint(wp1_rad,true)
+add_waypoint(wp1_rad)
+add_waypoint(wp2_rad)
+add_waypoint(wp3_rad)
+--set_circular_loop_times(1)
+--move_track(MoveTrackType.Arc,true)
+set_blend_radius(0.05)
+--set_arrival_ahead_distance_mode(0.1)
+set_tool_kinematics_param({0,0,0.05})
+move_track(MoveTrackType.CARTESIAN_MOVEP,true)
+--move_line(wp2_rad,true)
+--move_line(wp3_rad,true)

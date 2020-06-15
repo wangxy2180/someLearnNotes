@@ -1,0 +1,70 @@
+--server机械臂
+--port是server的port：机械臂
+--ip是client的ip：电脑
+
+port_server=8888
+ip_client="192.168.123.123"
+
+--字符串分割函数
+function string.split(str,delimiter)
+--不知为啥给的样例if没加括号
+	if(str==nil or str=="" or delimiter==nil) then
+		return nil
+	end
+	local result={}
+	for match in (str..delimiter):gmatch("(.-)"..delimiter) do
+		table.insert(result,match)
+	end
+	return result
+end
+
+function deg_to_rad(table1)
+	table_ret={}
+	for i=1,#table1,1 do
+		table_ret[i]=d2r(table1[i])
+	end
+	return table_ret
+end
+
+set_global_variable("V_D_joint1Angle",0)
+set_global_variable("V_D_joint2Angle",0)
+set_global_variable("V_D_joint3Angle",0)
+set_global_variable("V_D_joint4Angle",0)
+set_global_variable("V_D_joint5Angle",0)
+set_global_variable("V_D_joint6Angle",0)
+
+tcp.server.listen(port_server)
+
+while(tcp.server.is_conncted(ip_client)~=true)do
+
+	sleep(1)
+
+end
+print("client connected")
+
+recv=""
+
+--如果受到的不是quit，那么就将收到的
+--6个关节角度转换后赋值给全局变量
+--
+while(recv~="quit") do
+	sleep(1)
+	recv=tcp.server.recv_str_data(ip_client)
+	if(recv~="") then
+		data=string.split(recv,",")
+		set_global_variable("V_D_joint1Angle",d2r(tonumber(data[1])))
+		set_global_variable("V_D_joint2Angle",d2r(tonumber(data[2])))
+		set_global_variable("V_D_joint3Angle",d2r(tonumber(data[3])))
+		set_global_variable("V_D_joint4Angle",d2r(tonumber(data[4])))
+		set_global_variable("V_D_joint5Angle",d2r(tonumber(data[5])))
+		set_global_variable("V_D_joint6Angle",d2r(tonumber(data[6])))
+	end
+end
+
+
+
+print("TCP server will close after 5 seconds")
+
+sleep(5)
+
+tcp.server.close()

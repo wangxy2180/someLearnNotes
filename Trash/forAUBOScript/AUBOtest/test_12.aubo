@@ -1,0 +1,73 @@
+
+--字符串分割函数
+function string.split(str,delimiter)
+	if str==nil or str=='' or delimiter==nil then
+		return nil
+	end
+	local result = {}
+	for match in (str..delimiter):gmatch("(.-)"..delimiter) do
+		table.insert(result,match)
+	end
+	return result
+end
+
+--角度转弧度
+function deg_to_rad(table1)
+	table_ret = {}
+	for i = 1,#table1,1 do
+		table_ret[i] = d2r(table1[i])
+	end
+	return table_ret
+end
+
+--server的IP和port
+ip_server = "192.168.2.225"
+port_server = 10000
+--连接到TCP Server
+connectTCPServer(ip_server,port_server)
+
+--移动到初始点
+wp1 = {-16.418907,11.715555,-133.748860,-55.472799,-89.999982,-14.340675}
+wp1_rad = deg_to_rad(wp1)
+init_global_move_profile()
+set_joint_maxacc({1,1,1,1,1,1})
+set_joint_maxvelc({1,1,1,1,1,1})
+move_joint(wp1_rad,true)
+
+wp = get_current_waypoint()
+pos_current = {wp.pos.x, wp.pos.y, wp.pos.z}
+ori_current = {wp.ori.w, wp.ori.x, wp.ori.y, wp.ori.z}
+rpy_current = quaternion2rpy(ori_current)
+
+recv = ""
+--接收到"quit"时退出程序
+while(recv ~= "quit") do	
+	if(recv ~= "") then
+		--去除中括号[]
+		recv = string.sub(recv,2,-2)
+		--以逗号","分割字符串
+		table1 = string.split(recv,",")
+		--获取偏移量，转换成数字，便于计算
+		x_offset = tonumber(table1[1])/1000
+		y_offset = tonumber(table1[2])/1000
+		t_offset = d2r(tonumber(table1[3]))
+		--XY加上位置偏移量
+		pos_target = {}
+		pos_target[1] = pos_current[1] + x_offset
+		pos_target[2] = pos_current[2] + y_offset
+		pos_target[3] = pos_current[3]
+		--RZ加上角度偏移量
+		rpy_target = {}
+		rpy_target[1] = rpy_current[1]
+		rpy_target[2] = rpy_current[2]
+		rpy_target[3] = rpy_current[3] + t_offset
+		ori_target = rpy2quaternion(rpy_target)
+		--求目标位置逆解
+		joint = get_target_pose(pos_target,ori_target,false,{0,0,0},{1,0,0,0})
+		--关节运动至目标位置
+		move_joint(joint,true)
+	end
+	--接收server发来的数据
+	recv = clientRecvData(ip_server,port_server)
+	sleep(0.01)
+end

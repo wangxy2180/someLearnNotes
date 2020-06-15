@@ -1,0 +1,28 @@
+--起点
+wp1={-22.800568,10.900464,-134.154751,-47.123872,-62.404652,-42.623068}
+
+--角度转弧�
+function deg_to_rad(table1)
+	table_ret = {}
+	for i = 1,#table1,1 do
+		table_ret[i] = d2r(table1[i])
+	end
+	return table_ret
+end
+
+wp1_rad = deg_to_rad(wp1)
+--运动至起点位�
+init_global_move_profile()
+set_joint_maxacc({1,1,1,1,1,1})
+set_joint_maxvelc({1,1,1,1,1,1})
+move_joint(wp1_rad,true)
+--法兰中心在Base下的位置和姿�
+pos_target = {-0.4,0,0}
+ori_target = rpy2quaternion({d2r(180),d2r(0),d2r(0)})
+--求逆解
+joint = get_target_pose(pos_target,ori_target,false,{0,0,0},{1,0,0,0})
+--运动至目标位�
+init_global_move_profile()
+set_joint_maxacc({1,1,1,1,1,1})
+set_joint_maxvelc({1,1,1,1,1,1})
+move_joint(joint,true)

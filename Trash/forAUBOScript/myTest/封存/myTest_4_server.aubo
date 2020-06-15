@@ -1,0 +1,31 @@
+--port是指server的port,机械臂
+
+--ip是指client的ip,电脑
+
+port_server=8888
+
+ip_client="192.168.123.123"
+
+
+
+tcp.server.listen(port_server)
+
+
+
+--一直在这里等着他连接
+
+while(tcp.server.is_conncted(ip_client)~=true)do
+
+	sleep(1)
+
+end
+print("client connected")
+--发送一段数据
+
+tcp.server.send_str_data(ip_client,"hello,I am server")
+
+tcp.server.close()
+
+sleep(2)
+
+print("server:tcp server end")

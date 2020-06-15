@@ -1,0 +1,222 @@
+--该demo作为参考用，以实际需求做修改
+
+------------------------------------------------------------------分割字符串函数，后面调用
+
+function string.split(str,delimiter)
+
+        if str==nil or str=='' or delimiter==nil then
+
+                return nil
+
+        end
+
+        local result = {}
+
+        for match in (str..delimiter):gmatch("(.-)"..delimiter) do
+
+                table.insert(result,match)
+
+        end
+
+        return result
+
+end
+
+
+
+----------------------------------------------------------------获取PC发送过来的数据
+
+Client_ip="192.168.0.100"
+
+port=5000
+
+initTCPServer(port)
+
+recv=""
+
+while recv=="" do
+
+  recv=serverRecvData(Client_ip,port)------------------------数据类型为”移动方向+移动距离+移动速度“，如：X+,100,0.1,表示机械手向X+方向移动100mm速度为默认速度的10%
+
+  table1={}
+
+    table1= string.split(recv,",")
+
+    r=table1[1]
+
+    step=tonumber(table1[2])
+
+    speed=tonumber(table1[3])
+
+    print("r:"..r)
+
+    print("step:"..step)
+
+    print("speed:"..speed)
+
+  sleep(0.01)
+
+end
+
+-----------------------------------------------------------定义速度的值
+
+step=step*0.001
+
+speed=speed*2
+
+init_global_move_profile()
+
+set_joint_maxvelc({speed,speed,speed,speed,speed,speed})
+
+set_joint_maxacc({speed,speed,speed,speed,speed,speed})
+
+set_end_maxvelc(speed)
+
+set_end_maxacc(speed)
+
+-------------------------------------------------------------根据PC发送过来的不同数据移动不同的方向
+
+if (r == "x+") then
+
+   pos1 =  get_current_waypoint()
+
+     Pos1=quaternion2rpy ({pos1.ori.w,pos1.ori.x,pos1.ori.y,pos1.ori.z})
+
+     pos1.rx=r2d (Pos1[1])
+
+     pos1.ry=r2d (Pos1[2])
+
+     pos1.rz=r2d (Pos1[3])
+
+     pos1.rx=d2r (pos1.rx)
+
+     pos1.ry=d2r (pos1.ry)
+
+     pos1.rz=d2r (pos1.rz)
+
+     pos1.pos.x =pos1.pos.x+step
+
+  move_line(get_target_pose({pos1.pos.x, pos1.pos.y, pos1.pos.z}, rpy2quaternion ({pos1.rx,pos1.ry,pos1.rz}), false, {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0, 0.0}), true)
+
+end
+
+if (r == "x-") then
+
+   pos1 =  get_current_waypoint()
+
+     Pos1=quaternion2rpy ({pos1.ori.w,pos1.ori.x,pos1.ori.y,pos1.ori.z})
+
+     pos1.rx=r2d (Pos1[1])
+
+     pos1.ry=r2d (Pos1[2])
+
+     pos1.rz=r2d (Pos1[3])
+
+     pos1.rx=d2r (pos1.rx)
+
+     pos1.ry=d2r (pos1.ry)
+
+     pos1.rz=d2r (pos1.rz)
+
+     pos1.pos.x =pos1.pos.x-step
+
+  move_line(get_target_pose({pos1.pos.x, pos1.pos.y, pos1.pos.z}, rpy2quaternion ({pos1.rx,pos1.ry,pos1.rz}), false, {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0, 0.0}), true)
+
+end
+
+if (r == "y+") then
+
+   pos1 =  get_current_waypoint()
+
+     Pos1=quaternion2rpy ({pos1.ori.w,pos1.ori.x,pos1.ori.y,pos1.ori.z})
+
+     pos1.rx=r2d (Pos1[1])
+
+     pos1.ry=r2d (Pos1[2])
+
+     pos1.rz=r2d (Pos1[3])
+
+     pos1.rx=d2r (pos1.rx)
+
+     pos1.ry=d2r (pos1.ry)
+
+     pos1.rz=d2r (pos1.rz)
+
+     pos1.pos.y =pos1.pos.y+step
+
+  move_line(get_target_pose({pos1.pos.x, pos1.pos.y, pos1.pos.z}, rpy2quaternion ({pos1.rx,pos1.ry,pos1.rz}), false, {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0, 0.0}), true)
+
+end
+
+if (r == "y-") then
+
+   pos1 =  get_current_waypoint()
+
+     Pos1=quaternion2rpy ({pos1.ori.w,pos1.ori.x,pos1.ori.y,pos1.ori.z})
+
+     pos1.rx=r2d (Pos1[1])
+
+     pos1.ry=r2d (Pos1[2])
+
+     pos1.rz=r2d (Pos1[3])
+
+     pos1.rx=d2r (pos1.rx)
+
+     pos1.ry=d2r (pos1.ry)
+
+     pos1.rz=d2r (pos1.rz)
+
+     pos1.pos.y =pos1.pos.y-step
+
+  move_line(get_target_pose({pos1.pos.x, pos1.pos.y, pos1.pos.z}, rpy2quaternion ({pos1.rx,pos1.ry,pos1.rz}), false, {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0, 0.0}), true)
+
+end
+
+if (r == "z+") then
+
+   pos1 =  get_current_waypoint()
+
+     Pos1=quaternion2rpy ({pos1.ori.w,pos1.ori.x,pos1.ori.y,pos1.ori.z})
+
+     pos1.rx=r2d (Pos1[1])
+
+     pos1.ry=r2d (Pos1[2])
+
+     pos1.rz=r2d (Pos1[3])
+
+     pos1.rx=d2r (pos1.rx)
+
+     pos1.ry=d2r (pos1.ry)
+
+     pos1.rz=d2r (pos1.rz)
+
+     pos1.pos.z =pos1.pos.z+step
+
+  move_line(get_target_pose({pos1.pos.x, pos1.pos.y, pos1.pos.z}, rpy2quaternion ({pos1.rx,pos1.ry,pos1.rz}), false, {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0, 0.0}), true)
+
+end
+
+if (r == "z-") then
+
+   pos1 =  get_current_waypoint()
+
+     Pos1=quaternion2rpy ({pos1.ori.w,pos1.ori.x,pos1.ori.y,pos1.ori.z})
+
+     pos1.rx=r2d (Pos1[1])
+
+     pos1.ry=r2d (Pos1[2])
+
+     pos1.rz=r2d (Pos1[3])
+
+     pos1.rx=d2r (pos1.rx)
+
+     pos1.ry=d2r (pos1.ry)
+
+     pos1.rz=d2r (pos1.rz)
+
+     pos1.pos.z =pos1.pos.z-step
+
+  move_line(get_target_pose({pos1.pos.x, pos1.pos.y, pos1.pos.z}, rpy2quaternion ({pos1.rx,pos1.ry,pos1.rz}), false, {0.0, 0.0, 0.0}, {1.0, 0.0, 0.0, 0.0}), true)
+
+end
+

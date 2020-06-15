@@ -1,0 +1,13 @@
+
+pose = get_current_waypoint()
+
+joint = {pose.joint.j1,pose.joint.j2,pose.joint.j3,pose.joint.j4,pose.joint.j5,pose.joint.j6}
+pos_user,ori_user = base_to_user(joint,{0,0,0},{1,0,0,0},get_user_coord_param("tray22"))
+print(string.format("X_user = %6.6f",pos_user[1]))
+print(string.format("Y_user = %6.6f",pos_user[2]))
+print(string.format("Z_user = %6.6f",pos_user[3]))
+RPY_user = quaternion2rpy({ori_user[1],ori_user[2],ori_user[3],ori_user[4]})
+print(string.format("RX_user = %6.6f",r2d(RPY_user[1])))
+print(string.format("RY_user = %6.6f",r2d(RPY_user[2])))
+print(string.format("RZ_user = %6.6f",r2d(RPY_user[3])))
+

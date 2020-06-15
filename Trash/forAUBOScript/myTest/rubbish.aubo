@@ -1,0 +1,83 @@
+--print table func 
+key = "" 
+function printTable(table , level)
+	if (#table == 0) then
+		return
+	end 
+
+	level = level or 1
+	local indent = ""
+	for i = 1, level do
+		indent = indent.."  "
+	end 
+	if key ~= "" then
+		print(indent..key.." ".."=".." ".."{")
+	else
+		print(indent .. "{")
+	end 
+	
+	key = ""
+	for k,v in pairs(table) do
+		if type(v) == "table" then
+	key = k
+	PrintTable(v, level + 1)
+	else
+		local content = string.format("%s%s = %s", indent .. "  ",tostring(k), tostring(v))
+		print(content)
+	end
+	end 
+ 
+	print(indent .. "}")
+	end 
+ 
+--tcp client
+port = 8866
+port2 = 8877 
+ip = "192.168.80.152" 
+ 
+tcp.client.connect(ip,port)
+tcp.client.connect(ip,port2) 
+ 
+sleep(1) 
+ 
+tcp.client.send_str_data(ip, port, "Hello ")
+world = {string.byte("world",1), string.byte("world",2),
+string.byte("world",3), string.byte("world",4), string.byte("world",5)}
+tcp.client.send_asc_data(ip, port, world) 
+ 
+hello = {string.byte("Hello",1), string.byte("Hello",2), 
+string.byte("Hello",3), string.byte("Hello",4), string.byte("Hello",5)}
+tcp.client.send_asc_data(ip, port2, hello)
+tcp.client.send_str_data(ip, port2, " world") 
+ 
+print("string.byte : "..string.byte("end")) 
+ 
+recv={} 
+ 
+while(true) do 
+ 
+	sleep(1) 
+ 
+	recv=tcp.client.recv_asc_data(ip, port)
+	if (#recv ~= 0) then
+		print(string.format("recv from port %d size %d: ", port, #recv))
+		printTable(recv)
+	end 
+ 
+	recv2=tcp.client.recv_asc_data(ip, port2)
+	if (#recv2 ~= 0) then
+		print(string.format("recv from port %d size %d: ", port2, #recv))
+		printTable(recv2)
+	end 
+	 
+	if (#recv == 3 and string.format("%c%c%c", recv[1], recv[2], recv[3]) == "end") then
+		print("break")
+		break
+	end 
+end 
+tcp.client.disconnect(ip,port)
+tcp.client.disconnect(ip,port2) 
+ 
+sleep(1) 
+ 
+print("tcp client end") 

@@ -1,0 +1,35 @@
+
+wp1 = {-16.418907,11.715555,-133.748860,-55.472799,-89.999982,-14.340675}
+wp2 = {-16.898397,-10.512184,-88.484384,12.019414,-89.999914,-14.820165}
+wp3 = {-39.222928,2.445864,-119.524322,-31.977911,-89.996731,-37.144696}
+
+--角度转弧度
+function deg_to_rad(table1)
+	table_ret = {}
+	for i = 1,#table1,1 do
+		table_ret[i] = d2r(table1[i])
+	end
+	return table_ret
+end
+
+wp1_rad = deg_to_rad(wp1)
+wp2_rad = deg_to_rad(wp2)
+wp3_rad = deg_to_rad(wp3)
+
+--关节运动到轨迹第一个点
+init_global_move_profile()
+set_joint_maxacc({1,1,1,1,1,1})
+set_joint_maxvelc({1,1,1,1,1,1})
+move_joint(wp1_rad,true)
+--设置轨迹运动速度、加速度
+init_global_move_profile()
+set_end_maxacc(0.3)
+set_end_maxvelc(0.3)
+--添加3个路点
+add_waypoint(wp1_rad)
+add_waypoint(wp2_rad)
+add_waypoint(wp3_rad)
+--画圆2次
+--set_circular_loop_times(2)
+move_track(MoveTrackType.Arc,true)
+

@@ -1,0 +1,13 @@
+
+--server的IP和port
+ip_server = "192.168.2.225"
+port_server = 10000
+--连接到TCP Server
+connectTCPServer(ip_server,port_server)
+--获取当前路点坐标，转换成字符串
+wp = get_current_waypoint()
+str = 	  "x = "..tostring(wp.pos.x).."	"
+		.."y = "..tostring(wp.pos.y).."	"
+		.."z = "..tostring(wp.pos.z).."	"
+--发送给server
+clientSendData(ip_server,port_server,str)

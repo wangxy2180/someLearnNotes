@@ -1,0 +1,43 @@
+function deg_to_rad(table1)
+	table_ret={}
+	for i=1,#table1,1 do
+		table_ret[i]=d2r(table1[i])
+	end
+	return table_ret
+end
+
+wp1={0,0,-55,35,-90,-45}
+wp0={0,0,0,0,0,0}
+wp1_rad=deg_to_rad(wp1)
+wp0_rad=deg_to_rad(wp0)
+
+init_global_move_profile()
+set_joint_maxacc({1,1,1,1,1,1})
+set_joint_maxvelc({1,1,1,1,1,1})
+set_end_maxacc(0.3)
+set_end_maxvelc(0.3)
+
+move_joint(wp1_rad,true)
+offset=-0.05
+for i=1,4,1 do
+	set_relative_offset({0,0,offset})
+	move_line(get_global_variable("Realtime_Waypoint"), true) 
+	set_relative_offset({0,offset,0})
+	move_line(get_global_variable("Realtime_Waypoint"), true) 
+	set_relative_offset({0,0,-offset})
+	move_line(get_global_variable("Realtime_Waypoint"), true) 
+	set_relative_offset({0,-offset,0})
+	move_line(get_global_variable("Realtime_Waypoint"), true) 
+	offset=-offset
+end
+
+sleep(2)
+--如果这里不做这些初始化，会报出逆动力学错误
+--别问为什吗，我也很想知道
+init_global_move_profile()
+set_joint_maxacc({1,1,1,1,1,1})
+set_joint_maxvelc({1,1,1,1,1,1})
+set_end_maxacc(0.3)
+set_end_maxvelc(0.3)
+move_joint(wp0_rad,true)
+sleep(5)

@@ -1,0 +1,18 @@
+wp = {0,0,0,0,0,0}
+
+--角度转弧度
+function deg_to_rad(table1)
+	table_ret = {}
+	for i = 1,#table1,1 do
+		table_ret[i] = d2r(table1[i])
+	end
+	return table_ret
+end
+
+wp_rad = deg_to_rad(wp)
+
+--关节运动到轨迹第一个点
+init_global_move_profile()
+set_joint_maxacc({1,1,1,1,1,1})
+set_joint_maxvelc({1,1,1,1,1,1})
+move_joint(wp_rad,true)

@@ -1,0 +1,6 @@
+0.AUBOScriptEditor保存的编码是GB2312
+1.myTest1.aubo 一个很low的运动小样例
+2.myTest2.aubo一个不算太low的运动小样例
+3.myTest3.aubo一个有点词穷的运动小样例
+4.myTest4一个简单的传输一段字符串的小样例，机械臂是server
+5.myTest5一个简单的控制做一个运动的小样例，机械臂是server

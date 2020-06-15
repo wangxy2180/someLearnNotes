@@ -1,0 +1,6 @@
+-- Created using AuboEditor on ÖÜÈı 10ÔÂ 30 2019
+-- Written by: w.
+
+function onUse(cid, item, frompos, item2, topos)
+	return TRUE
+end

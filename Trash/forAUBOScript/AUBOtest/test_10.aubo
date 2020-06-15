@@ -1,0 +1,23 @@
+
+--客户端ip地址
+ip_client = "192.168.2.225"
+
+port = 30000
+--初始化服务器，打开端口30000
+initTCPServer(port)
+--等待客户端连接
+while(isClientConnected(ip_client) == false) do
+	sleep(0.01)
+end
+
+recv = ""
+--如果接收到"quit"，就退出循环
+while (recv ~= "quit") do
+	recv = serverRecvData(ip_client)
+	--如果接收到非空数据，就赋值给全局变量V_D_recv
+	if (recv ~= "") then
+		set_global_variable("V_D_recv",tonumber(recv))
+	end
+	sleep(0.01)
+end
+		 

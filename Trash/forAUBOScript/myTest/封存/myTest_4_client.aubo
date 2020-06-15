@@ -1,0 +1,39 @@
+--ip是server的ip,机械臂
+
+--port是server的port,机械臂
+
+ip_server="192.111.111.111"
+
+port_server=8888
+
+
+
+tcp.client.connect(ip_server,port_server)
+
+
+
+recv=""
+
+
+
+while(true) do
+
+	sleep(1)
+
+	recv=tcp.client.recv_str_data(ip_server,port_server)
+
+	if(#recv~=0) then
+
+		print("look,the server say \"hello\" to you\n:"..recv)
+
+		break
+
+	end
+
+end
+
+tcp.client.disconnect(ip_server,port_server)
+
+sleep(2)
+
+print("client is offline")

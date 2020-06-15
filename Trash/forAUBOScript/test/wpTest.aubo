@@ -1,0 +1,28 @@
+
+wp1 = {50,50,50,50,50,50}
+wp2 = {-50,-50,-50,-50,-50,-50}
+
+--角度转弧度
+function deg_to_rad(table1)
+	table_ret = {}
+	for i = 1,#table1,1 do
+		table_ret[i] = d2r(table1[i])
+	end
+	return table_ret
+end
+
+wp1_rad = deg_to_rad(wp1)
+wp2_rad = deg_to_rad(wp2)
+
+i = 1
+--while循环3欷
+while(i <= 3) do
+	--设置直线速度、加速度
+	init_global_move_profile()
+	set_end_maxacc(0.3)
+	set_end_maxvelc(0.3)
+	--直线运动至路点wp1
+	move_joint(wp1_rad,true)
+	move_joint(wp2_rad,true)
+	i = i + 1
+end

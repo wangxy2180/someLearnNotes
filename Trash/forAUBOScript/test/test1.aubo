@@ -1,0 +1,16 @@
+
+pose = get_current_waypoint()
+
+print(string.format("X_base = %6.6f",pose.pos.x))
+print(string.format("Y_base = %6.6f",pose.pos.y))
+print(string.format("Z_base = %6.6f",pose.pos.z))
+RPY = quaternion2rpy({pose.ori.w,pose.ori.x,pose.ori.y,pose.ori.z})
+print(string.format("RX_base = %6.6f",r2d(RPY[1])))
+print(string.format("RY_base = %6.6f",r2d(RPY[2])))
+print(string.format("RZ_base = %6.6f",r2d(RPY[3])))
+print(string.format("Joint1 = %6.6f",r2d(pose.joint.j1)))
+print(string.format("Joint2 = %6.6f",r2d(pose.joint.j2)))
+print(string.format("Joint3 = %6.6f",r2d(pose.joint.j3)))
+print(string.format("Joint4 = %6.6f",r2d(pose.joint.j4)))
+print(string.format("Joint5 = %6.6f",r2d(pose.joint.j5)))
+print(string.format("Joint6 = %6.6f",r2d(pose.joint.j6)))
